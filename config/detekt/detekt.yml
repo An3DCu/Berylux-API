@@ -1,0 +1,9 @@
+# Only the changes from detekt's defaults (buildUponDefaultConfig = true).
+style:
+  MagicNumber:
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+
+formatting:
+  MaximumLineLength:
+    maxLineLength: 120

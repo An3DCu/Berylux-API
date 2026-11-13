@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: berylux-api
+
+# Only the health check is open; it says UP or DOWN and nothing about the server.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
