@@ -10,6 +10,82 @@ servers:
 - description: Generated server url
   url: http://localhost
 paths:
+  /auth/login:
+    post:
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: "A new pair of tokens, in a new chain"
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The email or the password is missing
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The same answer for a wrong password and an unknown email
+      summary: Sign in with an email and a password
+      tags:
+      - Accounts
+  /auth/logout:
+    post:
+      operationId: logout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+        required: true
+      responses:
+        "204":
+          content: {}
+          description: "Done, whether or not the token was still in use"
+        "401":
+          description: "No access token, or one that has run out"
+      security:
+      - bearer: []
+      summary: End this phone's chain of refresh tokens
+      tags:
+      - Accounts
+  /auth/refresh:
+    post:
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: A new pair; the refresh token sent stops working
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: "Unknown, expired, ended or already used: sign in again"
+      summary: Trade a refresh token for the next pair
+      tags:
+      - Accounts
   /auth/register:
     post:
       operationId: register
@@ -21,7 +97,11 @@ paths:
         required: true
       responses:
         "201":
-          description: The account exists
+          content:
+            '*/*':
+              schema:
+                type: object
+          description: "The account exists, and these are its first tokens"
         "400":
           content:
             application/problem+json:
@@ -41,11 +121,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           description: The body is over 8 KiB
-      summary: Make an account with the guest's profile
+      summary: "Make an account with the guest's profile, and sign in"
       tags:
       - Accounts
 components:
   schemas:
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - "null"
+          example: player@example.com
+        password:
+          type:
+          - string
+          - "null"
+      required:
+      - email
+      - password
     Problem:
       type: object
       description: An RFC 9457 problem detail
@@ -113,6 +208,15 @@ components:
       - pickSeed
       - sigilSeed
       - timeZone
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type:
+          - string
+          - "null"
+      required:
+      - refreshToken
     RegisterRequest:
       type: object
       properties:
@@ -137,3 +241,8 @@ components:
       - email
       - password
       - profile
+  securitySchemes:
+    bearer:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http

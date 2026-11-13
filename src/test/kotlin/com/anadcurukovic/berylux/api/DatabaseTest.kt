@@ -119,8 +119,10 @@ class DatabaseTest(@Autowired private val db: JdbcClient) {
         val own = ownChallenge(sam)
         insert(CaseRow(sam, challenge = firstChallenge("EASY")))
         insert(CaseRow(sam, custom = own))
-        db.sql("insert into refresh_tokens (id, user_id, token_hash, expires_at) values (?, ?, 'h', now())")
-            .params(UUID.randomUUID(), sam)
+        db.sql(
+            "insert into refresh_tokens (id, user_id, family_id, token_hash, expires_at) values (?, ?, ?, 'h', now())",
+        )
+            .params(UUID.randomUUID(), sam, UUID.randomUUID())
             .update()
         db.sql("insert into achievement_unlocks (user_id, key, unlocked_at) values (?, 'first_closed', now())")
             .param(sam)

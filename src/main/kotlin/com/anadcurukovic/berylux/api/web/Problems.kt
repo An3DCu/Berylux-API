@@ -22,6 +22,11 @@ object Problems {
 
     fun emailUnavailable(): ResponseEntity<ProblemDetail> = answer(HttpStatus.CONFLICT, "This email can't be used")
 
+    /** The same for a wrong password and an unknown email: nobody learns which emails have accounts. */
+    fun wrongCredentials(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Wrong email or password")
+
+    fun signInAgain(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Sign in again")
+
     fun tooLarge(): ResponseEntity<ProblemDetail> = answer(HttpStatus.CONTENT_TOO_LARGE, "The body is too large")
 
     fun unreadable(): ResponseEntity<ProblemDetail> = answer(HttpStatus.BAD_REQUEST, "The body can't be read")

@@ -31,17 +31,17 @@ The full spec is [`docs/openapi.yaml`](docs/openapi.yaml).
 |---|---|---|---|
 | GET | `/actuator/health` | No | Says UP or DOWN, with no details |
 | GET | `/swagger-ui.html`, `/v3/api-docs` | No | The API docs, only when running locally; 404 anywhere else |
-| POST | `/auth/register` | No | Makes an account with the guest's profile; a taken email can't be used |
-| POST | `/auth/login` | No | Coming in api-v0.2: trades an email and password for tokens |
-| POST | `/auth/refresh` | No | Coming in api-v0.2: a new pair of tokens; the old refresh token stops working |
-| POST | `/auth/logout` | Yes | Coming in api-v0.2: revokes this phone's refresh token |
+| POST | `/auth/register` | No | Makes an account with the guest's profile and signs in; a taken email can't be used |
+| POST | `/auth/login` | No | Trades an email and a password for a pair of tokens |
+| POST | `/auth/refresh` | No | Trades a refresh token for the next pair; the one sent stops working |
+| POST | `/auth/logout` | Yes | Ends this phone's chain of refresh tokens |
 | DELETE | `/account` | Yes | Coming in api-v0.2: deletes the account and everything in it |
 
 Every other route answers 401.
 
 ## Security
 
-Nobody can reach the API without signing in, except where a route is named open. Today that's the health check, register, and the docs when running locally.
+Nobody can reach the API without signing in, except where a route is named open. Today that's the health check, register, log in, refresh, and the docs when running locally.
 
 - A closed route answers 401, and one that doesn't exist answers the same. Nobody learns which routes are there.
 - Errors never carry a stack trace, an exception name, a message or SQL.
@@ -55,10 +55,16 @@ Nobody can reach the API without signing in, except where a route is named open.
 - Register names each wrong field and never repeats the password.
 - Register says when an email can't be used. Without sending email, it can't keep that secret.
 
-Coming in api-v0.2, with sign-in:
-- Access tokens that last 15 minutes. Refresh tokens are stored hashed and replaced on every use; using an old one ends the whole chain.
+- Access tokens are HS256 JWTs that last 15 minutes. They name the player's id and nothing else.
+- The API won't start without a signing secret of at least 32 random bytes.
+- Refresh tokens are 32 random bytes, stored only as their SHA-256, and last 30 days.
+- Each refresh replaces the refresh token. An old one that comes back ends its whole chain, and that phone signs in again.
+- Log in gives the same answer for a wrong password and an unknown email, in the same time.
+- Answers with tokens are never kept by caches.
+
+Coming in api-v0.2:
 - Rate limits on the sign-in routes, per address and per account.
-- Log in gives the same answer whether an email has an account or not.
+- Deleting an account, and turning away its access tokens.
 
 ## Database
 
@@ -137,13 +143,22 @@ On macOS or Linux, the last line is `cp .env.example .env`.
 
 ### Configuration
 
-Open `.env` and fill in the password:
+Open `.env` and fill in the password and the signing secret:
 
 | Variable | What it is | Where to get it |
 |---|---|---|
 | `POSTGRES_DB` | The database's name | Keep `berylux` |
 | `POSTGRES_USER` | The database user | Keep `berylux` |
 | `POSTGRES_PASSWORD` | The database password | Any long random string. Only this machine's PostgreSQL uses it |
+| `BERYLUX_TOKEN_SECRET` | Signs access tokens | 32 random bytes in Base64, from the command below |
+
+Make the signing secret with:
+
+```powershell
+$b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)
+```
+
+On macOS or Linux: `openssl rand -base64 32`.
 
 `.env` is ignored by git and never committed.
 
