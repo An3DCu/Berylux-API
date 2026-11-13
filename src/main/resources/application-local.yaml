@@ -1,0 +1,6 @@
+# Running locally (./gradlew bootRun): the API docs at /v3/api-docs and /swagger-ui.html.
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

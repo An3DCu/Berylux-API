@@ -43,7 +43,7 @@ create table challenges (
     difficulty  text   not null check (difficulty in ('EASY', 'MEDIUM', 'HARD'))
 );
 
--- A deleted one is kept with deleted_at, so the deletion reaches the player's other phones.
+-- A deleted one is kept with deleted_at. That's how the deletion reaches the player's other phones.
 create table custom_challenges (
     id          uuid primary key,
     user_id     uuid        not null references users (id) on delete cascade,

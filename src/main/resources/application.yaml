@@ -11,3 +11,19 @@ management:
   endpoint:
     health:
       show-details: never
+
+# Errors say what went wrong in general terms, never how the server is built.
+server:
+  error:
+    include-stacktrace: never
+    include-exception: false
+    include-message: never
+    include-binding-errors: never
+
+# The API docs are off unless the local profile turns them on (application-local.yaml).
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+  writer-with-order-by-keys: true

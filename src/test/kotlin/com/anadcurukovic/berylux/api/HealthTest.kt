@@ -23,7 +23,8 @@ class HealthTest(@Autowired private val mvc: MockMvc) {
 
     @Test
     fun `no other actuator endpoint is open`() {
-        mvc.get("/actuator/env").andExpect { status { isNotFound() } }
-        mvc.get("/actuator/beans").andExpect { status { isNotFound() } }
+        // Security turns these away before Actuator sees them (until #3 they were 404s).
+        mvc.get("/actuator/env").andExpect { status { isUnauthorized() } }
+        mvc.get("/actuator/beans").andExpect { status { isUnauthorized() } }
     }
 }

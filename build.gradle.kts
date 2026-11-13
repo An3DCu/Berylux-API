@@ -28,15 +28,20 @@ kotlin {
 dependencies {
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.springdoc.openapi.webmvc.ui)
     implementation(libs.spring.boot.starter.data.jdbc)
     implementation(libs.spring.boot.starter.flyway)
     implementation(libs.flyway.database.postgresql)
     runtimeOnly(libs.postgresql)
+    // bootRun starts compose.yaml's PostgreSQL first; not in tests or in the jar.
+    developmentOnly(libs.spring.boot.docker.compose)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
 
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.spring.security.test)
     testImplementation(libs.spring.boot.testcontainers)
     testImplementation(libs.testcontainers.postgresql)
     testImplementation(libs.testcontainers.junit.jupiter)
@@ -47,7 +52,18 @@ dependencies {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    // ./gradlew test -PupdateSpec writes the OpenAPI spec to docs/openapi.yaml instead of checking it.
+    systemProperty("updateSpec", project.hasProperty("updateSpec"))
+    systemProperty("specFile", file("docs/openapi.yaml").absolutePath)
 }
+
+// Locally the API docs are on; anywhere else they're off.
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    systemProperty("spring.profiles.active", "local")
+}
+
+// One jar, the runnable one; the Dockerfile copies it.
+tasks.named<Jar>("jar") { enabled = false }
 
 detekt {
     buildUponDefaultConfig = true
