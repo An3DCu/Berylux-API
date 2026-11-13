@@ -1,0 +1,447 @@
+{
+  "version": 2,
+  "categories": [
+    {
+      "id": 1,
+      "name": "Body",
+      "description": "Moving, strength and stamina.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 2,
+      "name": "Mind",
+      "description": "Reading, learning and thinking hard.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 3,
+      "name": "People",
+      "description": "Friends, family and strangers.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 4,
+      "name": "Calm",
+      "description": "Quiet, rest and less noise.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 5,
+      "name": "Create",
+      "description": "Making things with your hands and head.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 6,
+      "name": "Skills",
+      "description": "Tools, code and the work you do.",
+      "kind": "REGULAR"
+    },
+    {
+      "id": 7,
+      "name": "Long shots",
+      "description": "Big, rare jobs. One shows up each day as the bonus case.",
+      "kind": "BONUS"
+    },
+    {
+      "id": 8,
+      "name": "My cases",
+      "description": "Challenges you wrote yourself.",
+      "kind": "CUSTOM"
+    }
+  ],
+  "challenges": [
+    {
+      "id": 1,
+      "categoryId": 1,
+      "title": "Stretch break",
+      "description": "Ten minutes of stretching, head to toe.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 2,
+      "categoryId": 1,
+      "title": "Stairs only",
+      "description": "Take the stairs instead of the lift all day.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 3,
+      "categoryId": 1,
+      "title": "Water first",
+      "description": "Drink a full glass of water before your first coffee.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 4,
+      "categoryId": 1,
+      "title": "Brisk walk",
+      "description": "Walk 5 km at a pace that makes talking a little hard.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 5,
+      "categoryId": 1,
+      "title": "Push-up ladder",
+      "description": "1 push-up, then 2, up to 10. Rest as long as you need between them.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 6,
+      "categoryId": 1,
+      "title": "Plank set",
+      "description": "Three planks of 60 seconds, with a minute of rest between them.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 7,
+      "categoryId": 1,
+      "title": "Long run",
+      "description": "Run 8 km. Walk if you have to, but keep moving.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 8,
+      "categoryId": 1,
+      "title": "Hundred squats",
+      "description": "100 bodyweight squats in one day, in as many sets as you like.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 9,
+      "categoryId": 2,
+      "title": "Ten new words",
+      "description": "Learn ten words in a language you're learning and use three in a sentence.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 10,
+      "categoryId": 2,
+      "title": "One long read",
+      "description": "Read one long article from start to finish, no skimming.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 11,
+      "categoryId": 2,
+      "title": "Puzzle",
+      "description": "Finish a crossword, a sudoku or a logic puzzle.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 12,
+      "categoryId": 2,
+      "title": "Thirty pages",
+      "description": "Read 30 pages of a book.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 13,
+      "categoryId": 2,
+      "title": "Teach it back",
+      "description": "Learn how something works and explain it to someone in under two minutes.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 14,
+      "categoryId": 2,
+      "title": "Notes by hand",
+      "description": "Watch a talk or lecture and write a one-page summary by hand.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 15,
+      "categoryId": 2,
+      "title": "Deep work",
+      "description": "Ninety minutes on one hard task, with your phone in another room.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 16,
+      "categoryId": 2,
+      "title": "Three games of chess",
+      "description": "Play three games and find your worst move in each one.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 17,
+      "categoryId": 3,
+      "title": "A real compliment",
+      "description": "Tell someone what exactly you like about their work.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 18,
+      "categoryId": 3,
+      "title": "Thank-you note",
+      "description": "Send a short thank-you to someone who helped you this year.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 19,
+      "categoryId": 3,
+      "title": "Ask and listen",
+      "description": "Ask a friend how they really are. Don't talk about yourself.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 20,
+      "categoryId": 3,
+      "title": "Old friend",
+      "description": "Call someone you haven't spoken to in over six months.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 21,
+      "categoryId": 3,
+      "title": "Coffee invite",
+      "description": "Invite someone new for a coffee or a walk.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 22,
+      "categoryId": 3,
+      "title": "Family table",
+      "description": "Share a meal with family, with every phone away.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 23,
+      "categoryId": 3,
+      "title": "Show up",
+      "description": "Go to a meetup, club or event where you know nobody.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 24,
+      "categoryId": 3,
+      "title": "Two hours for someone",
+      "description": "Volunteer two hours for a cause or a neighbour.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 25,
+      "categoryId": 4,
+      "title": "Box breathing",
+      "description": "Breathe in for four, hold for four, out for four, hold for four. Five rounds.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 26,
+      "categoryId": 4,
+      "title": "Silent ten",
+      "description": "Sit for ten minutes in silence. No phone, no music.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 27,
+      "categoryId": 4,
+      "title": "Three good things",
+      "description": "Write down three things that went well today.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 28,
+      "categoryId": 4,
+      "title": "Screen curfew",
+      "description": "No screens in the last hour before bed.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 29,
+      "categoryId": 4,
+      "title": "Walk without a phone",
+      "description": "A 30-minute walk with your phone left at home.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 30,
+      "categoryId": 4,
+      "title": "One clear surface",
+      "description": "Clear and clean one desk, shelf or table completely.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 31,
+      "categoryId": 4,
+      "title": "Offline evening",
+      "description": "From 6 PM until bed: no social media, no news, no messages.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 32,
+      "categoryId": 4,
+      "title": "Inbox zero",
+      "description": "Answer, file or delete everything in your main inbox.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 33,
+      "categoryId": 5,
+      "title": "Ten-minute sketch",
+      "description": "Draw whatever is in front of you for ten minutes.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 34,
+      "categoryId": 5,
+      "title": "Five angles",
+      "description": "Take five photos of one thing from five different angles.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 35,
+      "categoryId": 5,
+      "title": "Four lines",
+      "description": "Write four lines of verse about today.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 36,
+      "categoryId": 5,
+      "title": "New recipe",
+      "description": "Cook a dish you've never made, with one ingredient you've never used.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 37,
+      "categoryId": 5,
+      "title": "One page",
+      "description": "Write one page: a story, a letter or a journal entry.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 38,
+      "categoryId": 5,
+      "title": "Fix it",
+      "description": "Mend something broken instead of replacing it.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 39,
+      "categoryId": 5,
+      "title": "Finish a piece",
+      "description": "Finish a drawing, song, story or build you started before.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 40,
+      "categoryId": 5,
+      "title": "Handmade gift",
+      "description": "Make something by hand and give it to someone.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 41,
+      "categoryId": 6,
+      "title": "Read the manual",
+      "description": "Spend 30 minutes in the docs of a tool you use every day.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 42,
+      "categoryId": 6,
+      "title": "Three shortcuts",
+      "description": "Learn three keyboard shortcuts and use them all day.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 43,
+      "categoryId": 6,
+      "title": "Tidy one folder",
+      "description": "Sort out one messy folder on your computer.",
+      "difficulty": "EASY"
+    },
+    {
+      "id": 44,
+      "categoryId": 6,
+      "title": "Refactor",
+      "description": "Make one messy function or file in your own project clearer.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 45,
+      "categoryId": 6,
+      "title": "Write the tests",
+      "description": "Write tests for a piece of code that has none.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 46,
+      "categoryId": 6,
+      "title": "Back it up",
+      "description": "Back up your phone and important files, then check one opens.",
+      "difficulty": "MEDIUM"
+    },
+    {
+      "id": 47,
+      "categoryId": 6,
+      "title": "Hard problem",
+      "description": "Solve one hard problem on a coding or puzzle site.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 48,
+      "categoryId": 6,
+      "title": "Review a stranger",
+      "description": "Review an open-source pull request and leave a useful comment.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 49,
+      "categoryId": 7,
+      "title": "Half marathon on foot",
+      "description": "Walk 21 km in one day.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 50,
+      "categoryId": 7,
+      "title": "Speak up",
+      "description": "Give a talk or presentation to at least five people.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 51,
+      "categoryId": 7,
+      "title": "Sunrise climb",
+      "description": "Watch the sunrise from a hill or rooftop you had to climb.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 52,
+      "categoryId": 7,
+      "title": "Dinner for six",
+      "description": "Cook a full dinner for at least six people.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 53,
+      "categoryId": 7,
+      "title": "Ship it",
+      "description": "Publish something you made: an app, a post, a song or a video.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 54,
+      "categoryId": 7,
+      "title": "A day offline",
+      "description": "Go a whole day without the internet.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 55,
+      "categoryId": 7,
+      "title": "Learn a song",
+      "description": "Learn to play or sing a whole song, start to finish.",
+      "difficulty": "HARD"
+    },
+    {
+      "id": 56,
+      "categoryId": 7,
+      "title": "Teach a skill",
+      "description": "Spend an hour teaching someone something you're good at.",
+      "difficulty": "HARD"
+    }
+  ]
+}
