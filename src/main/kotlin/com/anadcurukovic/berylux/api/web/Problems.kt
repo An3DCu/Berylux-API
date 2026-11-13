@@ -28,6 +28,9 @@ object Problems {
 
     fun signInAgain(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Sign in again")
 
+    /** Only for a player who is already signed in: they know their own email has an account. */
+    fun wrongPassword(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Wrong password")
+
     fun tooManyTries(retryAfterSeconds: Long): ResponseEntity<ProblemDetail> {
         val problem = ProblemDetail.forStatus(HttpStatus.TOO_MANY_REQUESTS).apply { title = TOO_MANY_TRIES }
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)

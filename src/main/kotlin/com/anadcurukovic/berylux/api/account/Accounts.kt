@@ -36,6 +36,30 @@ class Accounts(private val jdbc: JdbcClient) {
         return id
     }
 
+    /** The password hash of the account with this id, if it still exists. */
+    fun passwordHash(userId: UUID): String? =
+        jdbc.sql("select password_hash from users where id = :id")
+            .param("id", userId)
+            .query(String::class.java)
+            .optional()
+            .orElse(null)
+
+    fun exists(userId: UUID): Boolean =
+        jdbc.sql("select exists (select 1 from users where id = :id)")
+            .param("id", userId)
+            .query(Boolean::class.java)
+            .single()
+
+    /**
+     * Deletes the account and everything that was theirs. One statement, in one transaction: the
+     * profile, own challenges, cases, refresh tokens, commendations and sync changes all go by the
+     * foreign keys' `on delete cascade`.
+     */
+    @Transactional
+    fun delete(userId: UUID) {
+        jdbc.sql("delete from users where id = :id").param("id", userId).update()
+    }
+
     /** The account's id and password hash, for log in. */
     fun credentials(email: String): Credentials? =
         jdbc.sql("select id, password_hash from users where email = :email")

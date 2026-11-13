@@ -5,6 +5,7 @@ import com.nimbusds.jose.proc.SecurityContext
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm
 import org.springframework.security.oauth2.jwt.JwsHeader
 import org.springframework.security.oauth2.jwt.JwtClaimsSet
@@ -45,11 +46,15 @@ object SigningKey {
 class AccessTokenKeys(@Value("\${berylux.token-secret:}") secret: String) {
     private val key = SigningKey.from(secret)
 
+    /** Checks the signature, the times and the issuer, then that the account still exists. */
     @Bean
-    fun jwtDecoder(): JwtDecoder = NimbusJwtDecoder.withSecretKey(key)
+    fun jwtDecoder(accountExists: AccountStillExists): JwtDecoder = NimbusJwtDecoder.withSecretKey(key)
         .macAlgorithm(MacAlgorithm.HS256)
         .build()
-        .apply { setJwtValidator(JwtValidators.createDefaultWithIssuer(AccessTokens.ISSUER)) }
+        .apply {
+            val signedHere = JwtValidators.createDefaultWithIssuer(AccessTokens.ISSUER)
+            setJwtValidator(DelegatingOAuth2TokenValidator(signedHere, accountExists))
+        }
 
     @Bean
     fun jwtEncoder(): JwtEncoder = NimbusJwtEncoder(ImmutableSecret<SecurityContext>(key))
