@@ -1,0 +1,13 @@
+openapi: 3.1.0
+info:
+  description: "Accounts, sync and the weekly leaderboard for the Berylux app."
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  title: Berylux API
+  version: 0.1.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths: {}
+components: {}

@@ -87,7 +87,7 @@ erDiagram
 - **Ids a phone creates are UUIDs.** Cases and the player's own challenges get their id on the phone, offline, and the server keeps it.
 - **Built-in challenges** come from the app's own `challenges.json`, copied to [`src/main/resources/seed`](../src/main/resources/seed) and loaded by the migration `V2__Load_challenges`, with the same ids. The server needs each one's difficulty to count Lux.
 - **A case is about one challenge**, a built-in one or the player's own, never both. A closed case has the game day it was closed on, and only a closed case has one.
-- **An own challenge that's deleted is kept** with `deleted_at`, so the deletion reaches the player's other phones.
+- **An own challenge that's deleted is kept** with `deleted_at`. That's how the deletion reaches the player's other phones.
 - **Deleting an account** deletes everything that was theirs, through `on delete cascade`.
 - **`sync_changes`** lists every change in order. A phone's cursor is the last `seq` it has seen.
 
