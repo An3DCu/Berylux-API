@@ -10,6 +10,42 @@ servers:
 - description: Generated server url
   url: http://localhost
 paths:
+  /account:
+    delete:
+      operationId: delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteAccountRequest"
+        required: true
+      responses:
+        "204":
+          description: "Gone: the account, its profile, cases and tokens"
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The password is missing
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: "No access token, or the password is wrong"
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: Too many tries for this account; `Retry-After` says how many
+            seconds to wait
+      security:
+      - bearer: []
+      summary: Delete the account and everything in it
+      tags:
+      - Accounts
   /auth/login:
     post:
       operationId: login
@@ -147,6 +183,16 @@ paths:
       - Accounts
 components:
   schemas:
+    DeleteAccountRequest:
+      type: object
+      properties:
+        password:
+          type:
+          - string
+          - "null"
+          description: "Asked again: an access token alone can't delete an account"
+      required:
+      - password
     LoginRequest:
       type: object
       properties:

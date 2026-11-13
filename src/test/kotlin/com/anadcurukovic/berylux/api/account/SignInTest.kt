@@ -241,7 +241,14 @@ class SignInTest(
 
     @Test
     fun `an access token that ran out, came from elsewhere, or isn't signed is turned away`() {
-        val userId = UUID.randomUUID().toString()
+        // A player who exists: each token below is turned away for its own fault, not for a missing account.
+        val email = freshEmail()
+        register(email)
+        val userId = jdbc.sql("select id from users where email = :email")
+            .param("email", email)
+            .query(UUID::class.java)
+            .single()
+            .toString()
         val header = JwsHeader.with(MacAlgorithm.HS256).build()
         fun claims(issuer: String, issued: Instant) = JwtClaimsSet.builder()
             .issuer(issuer)

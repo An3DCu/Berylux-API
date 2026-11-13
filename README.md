@@ -35,7 +35,7 @@ The full spec is [`docs/openapi.yaml`](docs/openapi.yaml).
 | POST | `/auth/login` | No | Trades an email and a password for a pair of tokens |
 | POST | `/auth/refresh` | No | Trades a refresh token for the next pair; the one sent stops working |
 | POST | `/auth/logout` | Yes | Ends this phone's chain of refresh tokens |
-| DELETE | `/account` | Yes | Coming in api-v0.2: deletes the account and everything in it |
+| DELETE | `/account` | Yes | Deletes the account and everything in it, after the password again |
 
 Every other route answers 401.
 
@@ -64,16 +64,16 @@ Nobody can reach the API without signing in, except where a route is named open.
 
 The sign-in routes are rate limited. Each window starts at the first try, and too many tries answer 429 with `Retry-After` in seconds.
 
-| Route | Per address | Per email |
+| Route | Per address | Per email or account |
 |---|---|---|
 | `POST /auth/register` | 3 an hour, 10 a day | — |
 | `POST /auth/login` | 5 a minute, 20 an hour | 5 tries in 15 minutes, whether or not the email has an account |
 | `POST /auth/refresh` | 10 a minute | — |
+| `DELETE /account` | — | 5 password tries in 15 minutes |
 
 The limits are kept in memory, in caches of at most 50,000 addresses or emails each. A flood of new addresses can't fill the memory. The address is the connection's own: behind a reverse proxy, the proxy's forwarded address will have to be trusted first.
 
-Coming in api-v0.2:
-- Deleting an account, and turning away its access tokens.
+Deleting an account asks for the password again. A stolen access token alone can't delete anything, and gets 5 guesses at the password in 15 minutes. The account and everything in it go in one statement, through the foreign keys' cascades. Every signed-in request checks the account still exists: a deleted account's access token stops at once, not 15 minutes later.
 
 ## Database
 

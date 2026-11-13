@@ -28,6 +28,9 @@ enum class Limit(val windows: List<Pair<Long, Duration>>) {
 
     /** Per address. A phone refreshes once every 15 minutes. */
     REFRESH(listOf(10L to Duration.ofMinutes(1))),
+
+    /** Per account: a stolen access token can't be used to guess the password on the delete route. */
+    DELETE_ACCOUNT(listOf(5L to Duration.ofMinutes(15))),
     ;
 
     val longestWindow: Duration = windows.maxOf { it.second }
