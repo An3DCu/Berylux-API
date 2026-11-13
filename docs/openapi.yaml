@@ -9,5 +9,131 @@ info:
 servers:
 - description: Generated server url
   url: http://localhost
-paths: {}
-components: {}
+paths:
+  /auth/register:
+    post:
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+        required: true
+      responses:
+        "201":
+          description: The account exists
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: "Each field that's wrong, under `problems`, and what's wrong\
+            \ with it"
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The email can't be used
+        "413":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The body is over 8 KiB
+      summary: Make an account with the guest's profile
+      tags:
+      - Accounts
+components:
+  schemas:
+    Problem:
+      type: object
+      description: An RFC 9457 problem detail
+      properties:
+        instance:
+          type:
+          - string
+          - "null"
+          description: The path that was called
+        problems:
+          type:
+          - object
+          - "null"
+          additionalProperties:
+            type: string
+          description: "Only on a 400: each wrong field and what's wrong with it"
+          example:
+            password: too_short
+            profile.dayStartHour: out_of_range
+        status:
+          type: integer
+          format: int32
+          example: 400
+        title:
+          type: string
+          example: Some fields are wrong
+    ProfileFields:
+      type: object
+      properties:
+        dayStartHour:
+          type:
+          - integer
+          - "null"
+          format: int32
+          example: 4
+          maximum: 23
+          minimum: 0
+        name:
+          type:
+          - string
+          - "null"
+          example: Marlowe
+          maxLength: 20
+        pickSeed:
+          type:
+          - integer
+          - "null"
+          format: int64
+          description: Drives the daily picks and the rivals
+        sigilSeed:
+          type:
+          - integer
+          - "null"
+          format: int64
+          description: Draws the sigil
+        timeZone:
+          type:
+          - string
+          - "null"
+          description: An IANA time zone
+          example: Europe/Sarajevo
+      required:
+      - dayStartHour
+      - name
+      - pickSeed
+      - sigilSeed
+      - timeZone
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type:
+          - string
+          - "null"
+          example: player@example.com
+          maxLength: 254
+        password:
+          type:
+          - string
+          - "null"
+          description: "Counted in characters, with no rules about which ones"
+          maxLength: 128
+          minLength: 10
+        profile:
+          oneOf:
+          - $ref: "#/components/schemas/ProfileFields"
+          - type: "null"
+      required:
+      - email
+      - password
+      - profile

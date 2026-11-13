@@ -31,7 +31,7 @@ The full spec is [`docs/openapi.yaml`](docs/openapi.yaml).
 |---|---|---|---|
 | GET | `/actuator/health` | No | Says UP or DOWN, with no details |
 | GET | `/swagger-ui.html`, `/v3/api-docs` | No | The API docs, only when running locally; 404 anywhere else |
-| POST | `/auth/register` | No | Coming in api-v0.2: makes an account |
+| POST | `/auth/register` | No | Makes an account with the guest's profile; a taken email can't be used |
 | POST | `/auth/login` | No | Coming in api-v0.2: trades an email and password for tokens |
 | POST | `/auth/refresh` | No | Coming in api-v0.2: a new pair of tokens; the old refresh token stops working |
 | POST | `/auth/logout` | Yes | Coming in api-v0.2: revokes this phone's refresh token |
@@ -41,7 +41,7 @@ Every other route answers 401.
 
 ## Security
 
-Nobody can reach the API without signing in, except where a route is named open. Today that's the health check, and the docs when running locally.
+Nobody can reach the API without signing in, except where a route is named open. Today that's the health check, register, and the docs when running locally.
 
 - A closed route answers 401, and one that doesn't exist answers the same. Nobody learns which routes are there.
 - Errors never carry a stack trace, an exception name, a message or SQL.
@@ -50,13 +50,15 @@ Nobody can reach the API without signing in, except where a route is named open.
 - There are no default passwords. Compose won't start until `.env` has one.
 - The container runs as a user without root.
 - gitleaks finds nothing in the history.
+- Passwords are hashed with Argon2id: 19 MiB of memory and 2 passes, as OWASP recommends. Only a few hash at once, and a burst of sign-ups can't take all the memory.
+- A request body over 8 KiB is turned away. One without a stated length is cut off at 8 KiB while it's read.
+- Register names each wrong field and never repeats the password.
+- Register says when an email can't be used. Without sending email, it can't keep that secret.
 
-Coming in api-v0.2, with accounts:
-- Passwords hashed with Argon2id.
+Coming in api-v0.2, with sign-in:
 - Access tokens that last 15 minutes. Refresh tokens are stored hashed and replaced on every use; using an old one ends the whole chain.
 - Rate limits on the sign-in routes, per address and per account.
-- The same answer whether an email has an account or not.
-- A size limit and validation on every request body.
+- Log in gives the same answer whether an email has an account or not.
 
 ## Database
 
