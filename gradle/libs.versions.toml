@@ -5,6 +5,7 @@ springDependencyManagement = "1.1.7"
 detekt = "1.23.8"
 springdoc = "3.2.0"
 bouncycastle = "1.87"
+bucket4j = "8.22.0"
 # detekt 1.23 is built with this Kotlin version and has to run on it
 detektKotlin = "2.0.21"
 
@@ -21,6 +22,8 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 postgresql = { module = "org.postgresql:postgresql" }
 # Spring Security's Argon2id encoder runs on BouncyCastle.
 bouncycastle-bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+bucket4j-core = { module = "com.bucket4j:bucket4j_jdk17-core", version.ref = "bucket4j" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine" }
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 spring-security-test = { module = "org.springframework.security:spring-security-test" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql" }

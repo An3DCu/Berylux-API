@@ -1,5 +1,6 @@
 package com.anadcurukovic.berylux.api.account
 
+import com.anadcurukovic.berylux.api.TestAddresses
 import com.anadcurukovic.berylux.api.TestDatabase
 import com.anadcurukovic.berylux.api.security.PasswordHasher
 import org.junit.jupiter.api.Test
@@ -41,6 +42,7 @@ class RegisterTest(
     """.trimIndent()
 
     private fun register(json: String): ResultActionsDsl = mvc.post("/auth/register") {
+        with(TestAddresses.from())
         contentType = MediaType.APPLICATION_JSON
         content = json
     }

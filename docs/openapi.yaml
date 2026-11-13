@@ -38,6 +38,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           description: The same answer for a wrong password and an unknown email
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: Too many tries from this address or for this email; `Retry-After`
+            says how many seconds to wait
       summary: Sign in with an email and a password
       tags:
       - Accounts
@@ -83,6 +90,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           description: "Unknown, expired, ended or already used: sign in again"
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: Too many tries from this address; `Retry-After` says how many
+            seconds to wait
       summary: Trade a refresh token for the next pair
       tags:
       - Accounts
@@ -121,6 +135,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
           description: The body is over 8 KiB
+        "429":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: Too many tries from this address; `Retry-After` says how many
+            seconds to wait
       summary: "Make an account with the guest's profile, and sign in"
       tags:
       - Accounts

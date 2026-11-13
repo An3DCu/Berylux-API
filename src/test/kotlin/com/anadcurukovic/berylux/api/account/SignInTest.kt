@@ -1,5 +1,6 @@
 package com.anadcurukovic.berylux.api.account
 
+import com.anadcurukovic.berylux.api.TestAddresses
 import com.anadcurukovic.berylux.api.TestDatabase
 import com.jayway.jsonpath.JsonPath
 import com.nimbusds.jose.jwk.source.ImmutableSecret
@@ -50,6 +51,7 @@ class SignInTest(
     private data class Pair(val access: String, val refresh: String)
 
     private fun post(path: String, json: String, bearer: String? = null): ResultActionsDsl = mvc.post(path) {
+        with(TestAddresses.from())
         contentType = MediaType.APPLICATION_JSON
         content = json
         bearer?.let { header("Authorization", "Bearer $it") }

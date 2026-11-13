@@ -30,6 +30,8 @@ dependencies {
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.bucket4j.core)
+    implementation(libs.caffeine)
     implementation(libs.springdoc.openapi.webmvc.ui)
     implementation(libs.spring.boot.starter.data.jdbc)
     implementation(libs.spring.boot.starter.flyway)
