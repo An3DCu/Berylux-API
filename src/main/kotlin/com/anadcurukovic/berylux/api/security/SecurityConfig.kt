@@ -12,10 +12,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
-/**
- * Closed by default: every route needs a signed-in player unless it's in [OPEN]. Nothing signs a
- * player in yet. Until accounts arrive, only the open routes answer at all.
- */
+/** Closed by default: every route needs a signed-in player unless it's in [OPEN]. */
 @Configuration
 class SecurityConfig {
     @Bean
@@ -27,6 +24,8 @@ class SecurityConfig {
                 routes.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 routes.anyRequest().authenticated()
             }
+            // A signed-in player sends an access token: an HS256 JWT from this API (AccessTokens).
+            .oauth2ResourceServer { it.jwt { } }
             // Tokens, not cookies: no session to keep and no cookie for another site to ride on.
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .csrf { it.disable() }
@@ -49,6 +48,8 @@ class SecurityConfig {
         val OPEN: List<Pair<HttpMethod, String>> = listOf(
             HttpMethod.GET to "/actuator/health",
             HttpMethod.POST to "/auth/register",
+            HttpMethod.POST to "/auth/login",
+            HttpMethod.POST to "/auth/refresh",
             HttpMethod.GET to "/v3/api-docs",
             HttpMethod.GET to "/v3/api-docs/**",
             HttpMethod.GET to "/v3/api-docs.yaml",

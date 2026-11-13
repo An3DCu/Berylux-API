@@ -22,8 +22,11 @@ erDiagram
     refresh_tokens {
         uuid id PK
         uuid user_id FK
+        uuid family_id
         text token_hash UK
+        timestamptz created_at
         timestamptz expires_at
+        timestamptz used_at
         timestamptz revoked_at
     }
     profiles {

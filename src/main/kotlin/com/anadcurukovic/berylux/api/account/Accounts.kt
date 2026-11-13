@@ -35,4 +35,14 @@ class Accounts(private val jdbc: JdbcClient) {
             .update()
         return id
     }
+
+    /** The account's id and password hash, for log in. */
+    fun credentials(email: String): Credentials? =
+        jdbc.sql("select id, password_hash from users where email = :email")
+            .param("email", email)
+            .query { rs, _ -> Credentials(rs.getObject("id", UUID::class.java), rs.getString("password_hash")) }
+            .optional()
+            .orElse(null)
 }
+
+data class Credentials(val userId: UUID, val passwordHash: String)

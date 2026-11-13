@@ -2,6 +2,10 @@ spring:
   application:
     name: berylux-api
 
+# Signs access tokens. From the environment only; the API won't start without it (SigningKey).
+berylux:
+  token-secret: ${BERYLUX_TOKEN_SECRET:}
+
 # Only the health check is open; it says UP or DOWN and nothing about the server.
 management:
   endpoints:

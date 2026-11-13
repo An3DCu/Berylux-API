@@ -1,0 +1,3 @@
+# A signing secret for the tests only: 32 bytes, all zero, never used outside them.
+berylux:
+  token-secret: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=

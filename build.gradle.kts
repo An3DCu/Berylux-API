@@ -29,6 +29,7 @@ dependencies {
     implementation(libs.spring.boot.starter.webmvc)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
     implementation(libs.springdoc.openapi.webmvc.ui)
     implementation(libs.spring.boot.starter.data.jdbc)
     implementation(libs.spring.boot.starter.flyway)
@@ -58,9 +59,17 @@ tasks.withType<Test>().configureEach {
     systemProperty("specFile", file("docs/openapi.yaml").absolutePath)
 }
 
-// Locally the API docs are on; anywhere else they're off.
+// Locally the API docs are on; anywhere else they're off. The API reads its settings from .env,
+// as Docker Compose does.
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     systemProperty("spring.profiles.active", "local")
+    val dotEnv = file(".env")
+    if (dotEnv.exists()) {
+        dotEnv.readLines()
+            .map { it.trim() }
+            .filter { it.isNotEmpty() && !it.startsWith("#") && "=" in it }
+            .forEach { line -> environment(line.substringBefore("=").trim(), line.substringAfter("=").trim()) }
+    }
 }
 
 // One jar, the runnable one; the Dockerfile copies it.
