@@ -62,8 +62,17 @@ Nobody can reach the API without signing in, except where a route is named open.
 - Log in gives the same answer for a wrong password and an unknown email, in the same time.
 - Answers with tokens are never kept by caches.
 
+The sign-in routes are rate limited. Each window starts at the first try, and too many tries answer 429 with `Retry-After` in seconds.
+
+| Route | Per address | Per email |
+|---|---|---|
+| `POST /auth/register` | 3 an hour, 10 a day | — |
+| `POST /auth/login` | 5 a minute, 20 an hour | 5 tries in 15 minutes, whether or not the email has an account |
+| `POST /auth/refresh` | 10 a minute | — |
+
+The limits are kept in memory, in caches of at most 50,000 addresses or emails each. A flood of new addresses can't fill the memory. The address is the connection's own: behind a reverse proxy, the proxy's forwarded address will have to be trusted first.
+
 Coming in api-v0.2:
-- Rate limits on the sign-in routes, per address and per account.
 - Deleting an account, and turning away its access tokens.
 
 ## Database

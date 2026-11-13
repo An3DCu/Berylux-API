@@ -1,7 +1,9 @@
 package com.anadcurukovic.berylux.api.account
 
 import com.anadcurukovic.berylux.api.security.AccessTokens
+import com.anadcurukovic.berylux.api.security.Limit
 import com.anadcurukovic.berylux.api.security.PasswordHasher
+import com.anadcurukovic.berylux.api.security.RateLimits
 import com.anadcurukovic.berylux.api.web.ProblemShape
 import com.anadcurukovic.berylux.api.web.Problems
 import io.swagger.v3.oas.annotations.Operation
@@ -31,6 +33,7 @@ class AuthController(
     private val hasher: PasswordHasher,
     private val accessTokens: AccessTokens,
     private val refreshTokens: RefreshTokens,
+    private val limits: RateLimits,
 ) {
     // Checked when an email has no account: an unknown email costs the same hash as a wrong password.
     private val standIn = hasher.hash(UUID.randomUUID().toString())
@@ -53,6 +56,11 @@ class AuthController(
         description = "The body is over 8 KiB",
         content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
     )
+    @ApiResponse(
+        responseCode = "429",
+        description = "Too many tries from this address; `Retry-After` says how many seconds to wait",
+        content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
+    )
     fun register(@RequestBody request: RegisterRequest): ResponseEntity<*> =
         when (val checked = RegisterRules.check(request)) {
             is Checked.Invalid -> Problems.invalid(checked.problems)
@@ -72,6 +80,11 @@ class AuthController(
         description = "The same answer for a wrong password and an unknown email",
         content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
     )
+    @ApiResponse(
+        responseCode = "429",
+        description = "Too many tries from this address or for this email; `Retry-After` says how many seconds to wait",
+        content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
+    )
     fun login(@RequestBody request: LoginRequest): ResponseEntity<*> {
         val email = request.email?.trim()?.lowercase()
         val password = request.password
@@ -83,6 +96,12 @@ class AuthController(
                 },
             )
         }
+        // Counted before the email is looked up, for every email: the limit itself says nothing about accounts.
+        val wait = limits.take(Limit.LOGIN_EMAIL, email)
+        return if (wait != null) Problems.tooManyTries(wait) else signIn(email, password)
+    }
+
+    private fun signIn(email: String, password: String): ResponseEntity<*> {
         val account = accounts.credentials(email)
         val signedIn = account != null && passwordMatches(password, account.passwordHash)
         if (account == null) passwordMatches(password, standIn)
@@ -99,6 +118,11 @@ class AuthController(
     @ApiResponse(
         responseCode = "401",
         description = "Unknown, expired, ended or already used: sign in again",
+        content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
+    )
+    @ApiResponse(
+        responseCode = "429",
+        description = "Too many tries from this address; `Retry-After` says how many seconds to wait",
         content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
     )
     fun refresh(@RequestBody request: RefreshRequest): ResponseEntity<*> {

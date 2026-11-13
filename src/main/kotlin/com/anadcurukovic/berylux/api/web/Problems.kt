@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
  */
 object Problems {
     const val BUSY_RETRY_SECONDS = 5
+    const val TOO_MANY_TRIES = "Too many tries"
 
     fun invalid(problems: Map<String, String>): ResponseEntity<ProblemDetail> =
         answer(HttpStatus.BAD_REQUEST, "Some fields are wrong").also { it.body?.setProperty("problems", problems) }
@@ -26,6 +27,13 @@ object Problems {
     fun wrongCredentials(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Wrong email or password")
 
     fun signInAgain(): ResponseEntity<ProblemDetail> = answer(HttpStatus.UNAUTHORIZED, "Sign in again")
+
+    fun tooManyTries(retryAfterSeconds: Long): ResponseEntity<ProblemDetail> {
+        val problem = ProblemDetail.forStatus(HttpStatus.TOO_MANY_REQUESTS).apply { title = TOO_MANY_TRIES }
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+            .header(HttpHeaders.RETRY_AFTER, retryAfterSeconds.toString())
+            .body(problem)
+    }
 
     fun tooLarge(): ResponseEntity<ProblemDetail> = answer(HttpStatus.CONTENT_TOO_LARGE, "The body is too large")
 
