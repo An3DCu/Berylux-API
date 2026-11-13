@@ -137,10 +137,16 @@ class AuthController(
     @Operation(summary = "End this phone's chain of refresh tokens")
     @SecurityRequirement(name = "bearer")
     @ApiResponse(responseCode = "204", description = "Done, whether or not the token was still in use")
+    @ApiResponse(
+        responseCode = "400",
+        description = "The refresh token is missing",
+        content = [Content(mediaType = PROBLEM, schema = Schema(implementation = ProblemShape::class))],
+    )
     @ApiResponse(responseCode = "401", description = "No access token, or one that has run out", content = [Content()])
-    fun logout(@AuthenticationPrincipal jwt: Jwt, @RequestBody request: RefreshRequest): ResponseEntity<Unit> {
-        request.refreshToken?.let { refreshTokens.endChain(UUID.fromString(jwt.subject), it) }
-        return ResponseEntity.noContent().build()
+    fun logout(@AuthenticationPrincipal jwt: Jwt, @RequestBody request: RefreshRequest): ResponseEntity<*> {
+        val token = request.refreshToken ?: return Problems.invalid(mapOf("refreshToken" to "missing"))
+        refreshTokens.endChain(UUID.fromString(jwt.subject), token)
+        return ResponseEntity.noContent().build<Unit>()
     }
 
     /** A password longer than register allows can't be anyone's, and isn't worth a hash. */

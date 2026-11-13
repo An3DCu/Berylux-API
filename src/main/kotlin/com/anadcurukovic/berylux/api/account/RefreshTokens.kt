@@ -86,6 +86,13 @@ class RefreshTokens(private val jdbc: JdbcClient, private val clock: Clock) {
             .update()
     }
 
+    /**
+     * Deletes every token that has expired, and nothing else. A used or ended token stays until it
+     * expires: if it were gone, a copy that comes back couldn't end its chain. Returns how many went.
+     */
+    fun deleteExpired(): Int =
+        jdbc.sql("delete from refresh_tokens where expires_at <= :now").param("now", now()).update()
+
     private fun revokeFamily(familyId: UUID) {
         jdbc.sql("update refresh_tokens set revoked_at = :now where family_id = :family and revoked_at is null")
             .param("now", now())
