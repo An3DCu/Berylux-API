@@ -5,7 +5,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
   title: Berylux API
-  version: 0.1.0
+  version: 0.2.0
 servers:
 - description: Generated server url
   url: http://localhost
@@ -95,8 +95,17 @@ paths:
         required: true
       responses:
         "204":
-          content: {}
+          content:
+            '*/*':
+              schema:
+                type: object
           description: "Done, whether or not the token was still in use"
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+          description: The refresh token is missing
         "401":
           description: "No access token, or one that has run out"
       security:

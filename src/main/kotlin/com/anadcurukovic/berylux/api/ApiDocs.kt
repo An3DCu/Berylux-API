@@ -18,7 +18,7 @@ class ApiDocs {
                 Info()
                     .title("Berylux API")
                     .description("Accounts, sync and the weekly leaderboard for the Berylux app.")
-                    .version("0.1.0")
+                    .version("0.2.0")
                     .license(License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0")),
             )
             .components(

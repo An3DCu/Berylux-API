@@ -12,10 +12,13 @@ Berylux hands you a few challenges every day and keeps score of the ones you clo
 
 The phone stays the source of what you did; the server is the source of what it's worth. Cases get their ids on the phone. They can be made offline and synced later. The server counts Lux from the cases themselves, with the app's rules, and never takes a total from the phone.
 
-This is a work in progress. Version 0.1 is the foundation: the database, a closed-by-default API, and one command to run both. Accounts come next ([roadmap](#roadmap)).
+This is a work in progress. Version 0.2 adds accounts: register, log in, refresh, log out and delete, each guarded and rate limited. Sync and the leaderboard come next ([roadmap](#roadmap)).
 
-## Features in api-v0.1
+## Features in api-v0.2
 
+- **Accounts:** register with the guest's profile, log in, log out and delete the account with everything in it.
+- **Tokens:** 15-minute HS256 access tokens and 30-day refresh tokens that work once. A copied refresh token that comes back ends its chain.
+- **Rate limits:** on register, log in, refresh and the delete password, per address and per account.
 - **Database:** PostgreSQL with eight tables and a weekly leaderboard view, built only through Flyway migrations.
 - **Challenges:** the app's 56 built-in challenges, loaded from the same [`challenges.json`](src/main/resources/seed/challenges.json) with the same ids.
 - **Leaderboard view:** Lux by week for opted-in players, counted in SQL with the app's rules.
@@ -101,7 +104,8 @@ erDiagram
 | Layer | Tools |
 |---|---|
 | Language | Kotlin 2.4 on JDK 21 |
-| Framework | Spring Boot 4.1, Spring Security, Actuator, springdoc-openapi 3.2 |
+| Framework | Spring Boot 4.1, Spring Security with its OAuth2 resource server, Actuator, springdoc-openapi 3.2 |
+| Security | Argon2id on BouncyCastle, HS256 JWTs with Nimbus, Bucket4j with Caffeine |
 | Data | PostgreSQL 18, Flyway, Spring Data JDBC with `JdbcClient` |
 | Testing / CI | JUnit 5, Testcontainers, detekt, GitHub Actions |
 | Running | Docker Compose, a multi-stage Dockerfile |
@@ -109,21 +113,25 @@ erDiagram
 
 ## Architecture
 
-Spring Security stands in front of everything and turns away any route it doesn't know. Behind it, the routes will talk to PostgreSQL through Spring Data JDBC, and through `JdbcClient` where the SQL matters, like sync and the leaderboard. Flyway owns the schema. The app's rules for Lux live in a SQL view. The board is always counted from the cases.
+Two filters come first: one turns away bodies over 8 KiB, the next counts tries on the sign-in routes. Then Spring Security turns away any route that isn't open without a valid access token for an account that still exists. Behind it, the routes talk to PostgreSQL through `JdbcClient`, and sync and the leaderboard will too. Flyway owns the schema. The app's rules for Lux live in a SQL view. The board is always counted from the cases.
 
 ```mermaid
 flowchart LR
-  App[Berylux app] -->|JSON over HTTP| Sec[Spring Security, closed by default]
-  Sec --> Routes[Routes, from api-v0.2]
+  App[Berylux app] -->|JSON over HTTP| Size[8 KiB body limit]
+  Size --> Limits[Rate limits on sign-in]
+  Limits --> Sec[Spring Security, closed by default]
+  Sec --> Auth[Accounts and tokens]
   Sec --> Health[Health check]
-  Routes --> Data[Spring Data JDBC and JdbcClient]
+  Auth --> Data[JdbcClient]
   Data --> Db[(PostgreSQL 18)]
   Flyway[Flyway migrations] --> Db
 ```
 
 ```text
 src/main/kotlin/com/anadcurukovic/berylux/api/
-  security/            closed by default, and the list of open routes
+  account/             register, log in, refresh, log out, delete
+  security/            the open routes, tokens, password hashing, rate limits
+  web/                 the body limit and the problem answers
 src/main/kotlin/db/migration/
                        the migration that loads the challenges
 src/main/resources/
@@ -208,17 +216,22 @@ The same command CI runs. Testcontainers starts its own PostgreSQL 18 for the te
 | The app's `challenges.json`, same ids | A case points at the same challenge on both sides | The file is copied; a change goes in both repos |
 | The docs only locally, the spec committed | Nothing extra open in production, and the spec still public | The spec test fails until `-PupdateSpec` is run after a change |
 | Testcontainers with PostgreSQL 18 | Tests run on the same database as Compose, not a stand-in | The tests need Docker |
+| HS256 with one secret, not a key pair | One service signs and checks; nothing else needs to | Another service checking tokens later would need the secret, or a switch to keys |
+| Refresh tokens that work once, in chains | A copied token shows itself the first time both copies are used | Two refreshes sent at once by one phone sign it out |
+| Rate limits in memory, in fixed windows | No extra service, and every wait can be worked out by hand | A restart resets them, and one server can't share them with another |
+| A register that says an email is taken | Without sending email, there's no honest way to hide it | Register gets the tightest limit: 3 an hour from one address |
 
 ## Limitations
 
-- No accounts yet. Every route except the health check answers 401, and the app doesn't call the API.
+- No sync or leaderboard yet. The app doesn't call the API.
+- No email verification and no password reset: they need a mail service.
 - Not hosted. It runs on your own machine.
 - The tests need Docker running.
 - `challenges.json` is a copy of the app's, kept in step by hand.
 
 ## Roadmap
 
-- [ ] **api-v0.2 Accounts:** register, log in, refresh, log out and delete account, with the security above.
+- [x] **api-v0.2 Accounts:** register, log in, refresh, log out and delete account, with the security above.
 - [ ] **api-v0.3 Sync and leaderboard:** pull changes since a cursor, push batched writes, and the weekly board.
 - [ ] **api-v0.4 Google sign-in:** the API checks Google ID tokens.
 
