@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.spring.boot.starter.flyway)
     implementation(libs.flyway.database.postgresql)
     runtimeOnly(libs.postgresql)
+    runtimeOnly(libs.bouncycastle.bcprov)
     // bootRun starts compose.yaml's PostgreSQL first; not in tests or in the jar.
     developmentOnly(libs.spring.boot.docker.compose)
     implementation(libs.jackson.module.kotlin)

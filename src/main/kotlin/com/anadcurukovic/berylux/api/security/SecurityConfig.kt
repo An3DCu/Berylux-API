@@ -48,6 +48,7 @@ class SecurityConfig {
          */
         val OPEN: List<Pair<HttpMethod, String>> = listOf(
             HttpMethod.GET to "/actuator/health",
+            HttpMethod.POST to "/auth/register",
             HttpMethod.GET to "/v3/api-docs",
             HttpMethod.GET to "/v3/api-docs/**",
             HttpMethod.GET to "/v3/api-docs.yaml",
